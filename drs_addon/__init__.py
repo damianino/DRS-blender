@@ -26,7 +26,10 @@ bl_info = {
 import logging
 import bpy
 
-from drs_addon.operators.connect_drs_op import DRS_OP_Connect
+from .operators.Init_op import DRS_OP_Init
+from .operators.assemble_result_op import DRS_OP_AssembleResult
+
+from .operators.connect_drs_op import DRS_OP_Connect
 from .operators.render_section_op import DRS_OT_RenderSection
 from .operators.initiate_task_render_op import DRS_OP_InitiateTaskRender
 from .operators.enable_logging_op import DRS_OP_EnableLoggingOperator
@@ -41,7 +44,10 @@ def register():
     bpy.utils.register_class(DRS_OT_RenderSection)
     bpy.utils.register_class(DRS_OP_InitiateTaskRender)
     bpy.utils.register_class(DRS_OP_Connect)
+    bpy.utils.register_class(DRS_OP_AssembleResult)
+    bpy.utils.register_class(DRS_OP_Init)
     bpy.utils.register_class(DRS_PT_Panel)
+    
 
     print(__name__)
 
@@ -50,6 +56,8 @@ def unregister():
     bpy.utils.unregister_class(DRS_OP_InitiateTaskRender)
     bpy.utils.unregister_class(DRS_OT_RenderSection)
     bpy.utils.unregister_class(DRS_OP_Connect)
+    bpy.utils.unregister_class(DRS_OP_Init)
+    bpy.utils.unregister_class(DRS_OP_AssembleResult)
     bpy.utils.unregister_class(DRS_PT_Panel)
 
     print(__name__)

@@ -40,7 +40,7 @@ class DRSClient():
         pass
 
     @classmethod
-    def RenderRoutine(cls):
+    def RenderRoutine(cls, ip = "localhost"):
         response = GRPCClient.Render()
 
         if not response.Success:
@@ -48,6 +48,7 @@ class DRSClient():
             return
 
         cls.uuid = response.Body
+        bpy.types.WindowManager.DRS.uuid = response.Body
         workingDirPath = os.path.join(cls.tempPath, cls.uuid+"_customer")
         jobFilePath = os.path.join(workingDirPath, "job.blend")
         if not os.path.exists(workingDirPath):

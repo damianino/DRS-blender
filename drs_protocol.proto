@@ -1,0 +1,29 @@
+syntax = "proto3";
+package drs_protocol;
+
+option go_package = "/drs_protocol";
+
+message Request{
+  uint32 UserId = 1;
+  string SessionKey = 2;
+  string Body = 3;
+}
+
+message Response{
+    bool Success = 1;
+    string Body = 2;
+}
+
+message JobPollResponseMessage{
+  bool Success = 1;
+  string Body = 2;
+  int32 FragmentIndexes = 3;
+}
+
+service JobsManager{
+    rpc ConnectRequest(Request) returns (Response){}        // подключение к системе:       принимает ключ api,             возвращает ключ сессии
+    rpc RenderRequest(Request) returns (Response){}         // запрос на рендер файла:      принимает _________             возвращает успех/неуспех
+    rpc JobPollRequest(Request) returns (JobPollResponseMessage) {}       // запрос на получение работы:  принимает _________             возвращает ip заказчика
+    rpc UpdateRoleRequest(Request) returns (Response){}     // обновляет роль узла:         принимает роль (см. constants)  возвращает успех/неуспех
+    rpc ReportProgressRequest(Request) returns (Response){} // сообщение о прогрессе        принимает _________             возвращает номера отрендеренных фрагментов
+}

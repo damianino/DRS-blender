@@ -79,7 +79,7 @@ class Customer():
     @classmethod
     def SendFile(cls, c, fp):
         size = os.path.getsize(fp)
-        c.send(size.to_bytes(BUFF_SIZE, byteorder = "big"))
+        c.send(f"{size}".encode("utf-8"))
         logging.debug(f"a file of size {size} will be sent")
         f = open(fp, "rb")
         for chunk in read_in_chunks(f, FILE_BUFF_SIZE):
@@ -133,14 +133,19 @@ class Worker():
 
     @classmethod
     def ReciveFile(cls, fp):
-        size = int.from_bytes(cls.sock.recv(BUFF_SIZE), byteorder = "big")
+        size = int(cls.sock.recv(BUFF_SIZE).decode("utf-8"))
         print(f"Reciving file of size {size} bytes")
         logging.info(f"Reciving file of size {size} bytes")
         f = open(fp, "wb")
-        while size > 0:
-            data = cls.sock.recv(FILE_BUFF_SIZE)
+        current_size = 0
+        while current_size < size:
+            data = cls.sock.recv(1024)
+            if not data:
+                break
+            if len(data) + current_size > size:
+                data = data[:size-current_size] 
             f.write(data)
-            size -= FILE_BUFF_SIZE
+            current_size += len(data)
         f.close()
 
     @classmethod

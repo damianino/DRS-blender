@@ -117,14 +117,14 @@ class Worker():
 
     @classmethod
     def SendFragmentIndex(cls, fi):
-        cls.sock.send(f"{fi}".encode("iso-8859-1"))
+        cls.sock.sendall(f"{fi}".encode("iso-8859-1"))
         logging.debug(f"sent fragment index ({fi})")
     
     @classmethod
     def SendFile(cls, fp):
         size = os.path.getsize(fp)
         logging.debug(f"a file of size {size} will be sent")
-        cls.sock.send(size.to_bytes(BUFF_SIZE, byteorder = "big"))
+        cls.sock.send(f"{size}".encode("iso-8859-1"))
         f = open(fp, "rb")
         for chunk in read_in_chunks(f, FILE_BUFF_SIZE):
             cls.sock.sendall(chunk)
@@ -152,5 +152,3 @@ class Worker():
     def Disconnect(cls):
         cls.sock.shutdown(socket.SHUT_RDWR)
         cls.sock.close()
-
-

@@ -109,7 +109,9 @@ class DRSClient():
                     bpy.ops.drs.initiatetaskrender(filePath = workingDirPath, fragmentIndex = fragmentToRender)
                     cls.fragmentRenderedEvent.wait()
                     fragmentPath = os.path.join(workingDirPath, str(fragmentToRender) + ".png")
-                    Worker.SendFragmentIndex(fragmentToRender)
+                    #Worker.SendFragmentIndex(fragmentToRender)
+                    
+                    #Worker.sock.send(f"{fragmentToRender}".encode("iso-8859-1"))
                     Worker.SendFile(fragmentPath)
                     GRPCClient.ReportProgress(str(fragmentToRender))
                     print(f"Rendered fragment {fragmentToRender}" )
@@ -127,8 +129,3 @@ class DRSClient():
     @classmethod
     def GetfragmentRenderedEvent(cls):
         return cls.fragmentRenderedEvent
-    
-    
-
-
-    

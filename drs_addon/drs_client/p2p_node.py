@@ -54,7 +54,7 @@ class Customer():
                 cls.jobDone.set()
                 break
             
-            fragmentIndex = int.from_bytes(c.recv(BUFF_SIZE), byteorder="big", signed=True)
+            fragmentIndex = int(c.recv(BUFF_SIZE).decode("iso-8859-1"))
             print (f"{a} wants to send fragment {fragmentIndex}")
 
             if fragmentIndex not in range(100): 
@@ -79,7 +79,7 @@ class Customer():
     @classmethod
     def SendFile(cls, c, fp):
         size = os.path.getsize(fp)
-        c.send(f"{size}".encode("utf-8"))
+        c.send(f"{size}".encode("iso-8859-1"))
         logging.debug(f"a file of size {size} will be sent")
         f = open(fp, "rb")
         for chunk in read_in_chunks(f, FILE_BUFF_SIZE):
@@ -88,7 +88,7 @@ class Customer():
     
     @classmethod
     def ReciveFile(cls, c, fp):
-        size = int.from_bytes(c.recv(BUFF_SIZE), byteorder = "big")
+        size = int(c.recv(BUFF_SIZE).decode("iso-8859-1"))
         print(f"Reciving file of size {size} bytes")
         logging.info(f"Reciving file of size {size} bytes")
         f = open(fp, "wb")
@@ -117,7 +117,7 @@ class Worker():
 
     @classmethod
     def SendFragmentIndex(cls, fi):
-        cls.sock.sendall(fi.to_bytes(BUFF_SIZE, byteorder = "big", signed = True))
+        cls.sock.send(f"{fi}".encode("iso-8859-1"))
         logging.debug(f"sent fragment index ({fi})")
     
     @classmethod
@@ -133,7 +133,7 @@ class Worker():
 
     @classmethod
     def ReciveFile(cls, fp):
-        size = int(cls.sock.recv(BUFF_SIZE).decode("utf-8"))
+        size = int(cls.sock.recv(BUFF_SIZE).decode("iso-8859-1"))
         print(f"Reciving file of size {size} bytes")
         logging.info(f"Reciving file of size {size} bytes")
         f = open(fp, "wb")
